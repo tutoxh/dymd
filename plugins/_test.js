@@ -1,6 +1,6 @@
 
 //let fs = require('fs')
-import { fs } from 'fs'
+import fs from 'fs'
 let handler = async (m, { conn }) => {
 	
      let vidg = fs.readFileSync(`./src/mp4/1.mp4`)
