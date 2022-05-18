@@ -1,4 +1,4 @@
-import { webp2mp4 } from '../lib/webp2mp4'
+import webp2mp4 from '../lib/webp2mp4'
 
 let handler = async (m, { conn, usedPrefix, command }) => {
     if (!m.quoted) throw `✳️ Responde a un sticker con :\n\n*${usedPrefix + command}*`
