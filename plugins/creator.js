@@ -1,6 +1,6 @@
 function handler(m) {
-  /*const data = global.owner.filter(([id, isCreator]) => id && isCreator)
-  this.sendContact(m.chat, data.map(([id, name]) => [id, name]), m)*/
+  const data = global.owner.filter(([id, isCreator]) => id && isCreator)
+  this.sendContact(m.chat, data.map(([id, name]) => [id, name]), m)
   
   m.reply(`
 *≡ OWNER*
@@ -8,8 +8,7 @@ function handler(m) {
 ▢ Instagram :
   • https://instagram.com/fg98._
 ▢ WhatsApp :
-  • wa.me/549xxx
-  • wa.me/59172945992 (escribe solo si es necesario) 
+  • (escribe solo si es necesario) 
 ▢ GitHub :
   • https://github.com/FG98F
 ▢ Telegram : 
