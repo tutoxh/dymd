@@ -52,23 +52,20 @@ let handler = async (m, { conn, args, usedPrefix, command, text}) => {
   
     await m.reply(wait)
 		
-		 if(command.includes('nowm')) {
-   buffer = await getBuffer(ttdl.result.nowatermark)
-   if(!buffer) return m.reply('⚠️ Error')
-   conn.sendFile(m.chat, buffer, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
+  if(command.includes('nowm')) {
+      conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    } else if (command.includes('audio')) {
-     buffer = await getBuffer(ttdl.result.nowatermark)
-     if(!buffer) return m.reply('⚠️ Error')
-     conn.sendMessage(m.chat, buffer, MessageType.audio, {quoted: m, mimetype: 'audio/mp4'})
+     conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', '', m, null, { mimetype: 'audio/mp4' })
    } else {
      conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    }
    
 }
-handler.help = ['tiktok']
+handler.help = ['tiktok', 'tiktoknowm', 'tiktokaudio']
 handler.tags = ['downloader']
-handler.command = ['tes'] 
+handler.command = ['tiktok', 'tiktoknowm', 'tiktokaudio'] 
 
+handler.premium = false
 handler.limit = true
 
 export default handler
