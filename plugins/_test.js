@@ -1,16 +1,69 @@
-import { Tiktok } from 'xfarr-api'
-import { tiktok } from '../lib/scrape'
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
+import axios from 'axios'
+import cheerio from 'cheerio' 
+
+
+async function Ttdl (Url) {
+	return new Promise (async (resolve, reject) => {
+		await axios.request({
+			url: "https://ttdownloader.com/",
+			method: "GET",
+			headers: {
+				"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+				"accept-language": "en-US,en;q=0.9,id;q=0.8",
+				"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+				"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
+			}
+		}).then(respon => {
+			const $ = cheerio.load(respon.data)
+			const token = $('#token').attr('value')
+			axios({
+				url: "https://ttdownloader.com/req/",
+				method: "POST",
+				data: new URLSearchParams(Object.entries({url: Url, format: "", token: token})),
+				headers: {
+					"accept": "*/*",
+					"accept-language": "en-US,en;q=0.9,id;q=0.8",
+					"content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+					"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+					"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
+				}
+			}).then(res => {
+				const ch = cheerio.load(res.data)
+				const result = {
+					status: res.status,
+					result: {
+						nowatermark: ch('#results-list > div:nth-child(2)').find('div.download > a').attr('href'),
+						watermark: ch('#results-list > div:nth-child(3)').find('div.download > a').attr('href'),
+						audio: ch('#results-list > div:nth-child(4)').find(' div.download > a').attr('href')
+					}
+				}
+				resolve(result)
+			}).catch(reject)
+		}).catch(reject)
+	})
+}
+
+
+let handler = async (m, { conn, args, usedPrefix, command, text}) => {
 	
-  if (!text) throw `uhm.. url nya mana?\n\ncontoh:\n${usedPrefix + command} https://vt.tiktok.com/ZGJBtcsDq/`
-  if (!args[0].match(/tiktok/gi)) throw `link incorrecto`
-   await m.reply(wait)
+ if(!text) throw `✳️ Ingrese un link de Tiktok`
+     let ttdl = await Ttdl(text)
   
-  var anuu = await tiktok(args[0])
-    var { nowm, wm, audio } = anuu
-
-    conn.sendFile(m.chat, wm, 'tk.mp4', `✅ Aquí `, m) 
+    await m.reply(wait)
+		
+		 if(command.includes('nowm')) {
+   buffer = await getBuffer(ttdl.result.nowatermark)
+   if(!buffer) return m.reply('⚠️ Error')
+   conn.sendFile(m.chat, buffer, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
+   } else if (command.includes('audio')) {
+     buffer = await getBuffer(ttdl.result.nowatermark)
+     if(!buffer) return m.reply('⚠️ Error')
+     conn.sendMessage(m.chat, buffer, MessageType.audio, {quoted: m, mimetype: 'audio/mp4'})
+   } else {
+     conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
+   }
+   
 }
 handler.help = ['tiktok']
 handler.tags = ['downloader']
