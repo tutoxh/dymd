@@ -13,8 +13,8 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
      let { url, quality, extension, size, formattedSize  } = medias[0]
      let urlshort = await(await axios.get(`https://tinyurl.com/api-create.php?url=${url}`)).data
      let sell = `🎬 *Facebook MP4*\n\n✨ *Quality:* ${quality}\n🎚 *Size:* ${formattedSize}\n🚀 *Link:* ${urlshort}`
-     conn.sendMedia(m.chat, url, null, {caption: sell, mentions: [m.sender], jpegThumbnail: await(await fetch(thumbnail)).buffer()})
-
+  //   conn.sendMedia(m.chat, url, null, {caption: sell, mentions: [m.sender], jpegThumbnail: await(await fetch(thumbnail)).buffer()})
+     conn.sendFile(m.chat, url, 'fb.mp4', sell, m)
       
 }
 handler.help = ['facebook'].map(v => v + ' <url>')
