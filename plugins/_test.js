@@ -8,7 +8,7 @@ let handler = async (m, { conn, args, usedPrefix, command, text}) => {
        
   await m.reply(wait)
   
-   let hx.igstory(text).then(async (result) => {
+   hx.igstory(text).then(async (result) => {
           for (let i of result.medias) {
             if (i.url.includes("mp4")) {
              
