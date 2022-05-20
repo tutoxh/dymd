@@ -56,7 +56,7 @@ let handler = async (m, { conn, args, usedPrefix, command, text}) => {
       conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    } else if (command.includes('audio')) {
      /*conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', '', m, null, { mimetype: 'audio/mp4' })*/
-     conn.sendMessage(m.chat, buffer, MessageType.audio, {quoted: m, mimetype: 'audio/mp4'})
+     conn.sendMessage(m.chat, ttdl.result.nowatermark, MessageType.audio, {quoted: m, mimetype: 'audio/mp4'})
    } else {
      conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    }
