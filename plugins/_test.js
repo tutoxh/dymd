@@ -54,13 +54,13 @@ let handler = async (m, { conn, args, usedPrefix, command, text}) => {
   if(command.includes('nowm')) {
       conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    } else if (command.includes('audio')) {
-    conn.sendFile(m.chat, ttdl.result.nowatermark, 'error.mp3', null, m, false, { mimetype: 'audio/mp4' })}
+     conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', '', m, null, { mimetype: 'audio/mp4' })
    } else {
      conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
    }
    
 }
-handler.help = ['tiktok', 'tiktoknowm', 'tiktokaudio']
+handler.help = ['tiktok', 'tiktoknowm']
 handler.tags = ['downloader']
 handler.command = ['tiktok', 'tiktoknowm', 'tiktokaudio'] 
 
