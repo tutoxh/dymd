@@ -46,9 +46,9 @@ async function fgTtdl (Url) {
 
 let handler = async (m, { conn, args, usedPrefix, command, text}) => {
 	
- if(!text) throw `✳️ Ingrese un link de Tiktok`
+ if(!text) throw `✳️ Ingrese un link de Tiktok\n\n 📌 Ejemplo : ${usedPrefix + command} https://vm.tiktok.com/ZMLTvVagx/?k=1`
      let ttdl = await fgTtdl(text)
-  
+    if (!args[0].match(/tiktok/gi)) throw `❎ Link incorrecto`
     await m.reply(wait)
 		
   if(command.includes('nowm')) {
