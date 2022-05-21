@@ -1,30 +1,23 @@
-
-import axios from 'axios'
-import hx from 'hxz-api' 
-
-let handler = async (m, { conn, args, usedPrefix, command, text}) => {
-	
- if (!text) throw `✳️Ingrese el nombre de usuario\n\n📌 Ejemplo : ${usedPrefix + command} auronplay`
-       
-  await m.reply(wait)
-  
-   hx.igstory(text).then(async (result) => {
-          for (let i of result.medias) {
-            if (i.url.includes("mp4")) {
-             
-              conn.sendFile(m.chat, i.url, 'igstory.mp4', `✅ Hecho`.trim(), m)
-            } else {
-             
-              conn.sendFile(m.chat, i.url, '', '', m)
-            }
-          }
-        });
-   
+const roles = {
+  /*
+  'Role Name': <Nivel mínimo para obtener este rol>
+  */
+  'Bronce': 0,
+  'Plata': 10,
+  'Oro': 20,
+  'Platino': 30,
+  'Diamante': 40,
+  'Maestros': 50,
+  'Campeones': 60,
+  'Legendario': 80
 }
-handler.help = ['igstory <username>']
-handler.tags = ['downloader']
-handler.command = ['igstory', 'ighistoria' ]
 
-handler.limit = true
-
-export default handler
+export = {
+  before(m) {
+    let user = global.db.data.users[m.sender]
+    let level = user.level
+    let role = (Object.entries(roles).sort((a, b) => b[1] - a[1]).find(([,minLevel]) => level >= minLevel) || Object.entries(roles)[0])[0]
+    user.role = role
+    return true
+  }
+}
