@@ -94,6 +94,7 @@ const { state, saveState } = store.useSingleFileAuthState(global.authFile)
 const connectionOptions = {
   printQRInTerminal: true,
   auth: state,
+  browser: ['dylux-fg','Chrome','1.0.0'],
   // logger: pino({ level: 'trace' })
 }
 
