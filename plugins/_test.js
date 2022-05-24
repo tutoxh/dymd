@@ -1,20 +1,31 @@
-import { sticker } from '../lib/sticker.js'
 
-let handler = async (m, { conn }) => {
-	
-  let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-  let marah = global.API('https://some-random-api.ml', '/canvas/triggered', {
-    avatar: await conn.profilePictureUrl(who).catch(_ => 'https://i.ibb.co/PZNv21q/Profile-FG98.jpg'),
-  })
-let stiker = await sticker(false, marah, global.packname, global.author)
-  if (stiker) return await conn.sendFile(m.chat, stiker, null, { asSticker: true }, m)
-  
-  throw stiker.toString()
+import yts from 'yt-search'
+
+let handler = async (m, { text }) => {
+  if (!text) throw '✳️ Que quieres que busque en YouTube?'
+  let results = await yts(text)
+  let tes = results.all
+  let teks = results.all.map(v => {
+    switch (v.type) {
+      case 'video': return `
+▢ ${v.title}
+▢ *Link* : ${v.url}
+▢ *Duración* : ${v.timestamp}
+▢ *Subido :* ${v.ago}
+▢ *Vistas:* ${v.views}
+
+      `.trim()
+      case 'canal': return `
+▢ *${v.name}* (${v.url})
+▢${v.subCountLabel} (${v.subCount}) Suscribirse
+▢ ${v.videoCount} videos
+`.trim()
+    }
+  }).filter(v => v).join('\n\n________________________\n\n')
+  conn.sendFile(m.chat, tes[0].thumbnail, 'yts.jpeg', teks, m)
 }
-
-
-handler.help = ['trigger']
-handler.tags = ['sticker']
-handler.command = ['trigger', 'triggered', 'ger'] 
+handler.help = ['ytsearch <busca>'] 
+handler.tags = ['tools']
+handler.command = ['ytsearch', 'tes'] 
 
 export default handler
