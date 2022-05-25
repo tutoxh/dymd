@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url'
 import path, { join } from 'path'
 import { unwatchFile, watchFile } from 'fs'
 import chalk from 'chalk'
+import Canvas from "discord-canvas"
+import uploadImage from'./lib/uploadImage.js'
+import fetch from 'node-fetch'
 
 /**
  * @type {import('@adiwajshing/baileys')}
