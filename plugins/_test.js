@@ -1,62 +1,71 @@
-let limit = 50
-import fetch from 'node-fetch'
-import { youtubedl, youtubedlv2, youtubedlv3 } from '@bochilteam/scraper';
-let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-  if (!args || !args[0]) throw `✳️ Ejemplo :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`
- //m.reply('*⌛ _Cargando..._ ▬▬▬▭*') 
- let chat = global.db.data.chats[m.chat]
-  const isY = /y(es)/gi.test(args[1])
-  const { thumbnail, video: _video, title } = await youtubedl(args[0]).catch(async _ => await youtubedlv2(args[0])).catch(async _ => await youtubedlv3(args[0]))
-  const limitedSize = (isPrems || isOwner ? 350 : limit) * 3074
-  let video, source, res, link, lastError, isLimit
-  for (let i in _video) {
-    try {
-      video = _video[i]
-      isLimit = limitedSize < video.fileSize
-      if (isLimit) continue
-      link = await video.download()
-      if (link) res = await fetch(link)
-      isLimit = res?.headers.get('content-length') && parseInt(res.headers.get('content-length')) < limitedSize
-      if (isLimit) continue
-      if (res) source = await res.arrayBuffer()
-      if (source instanceof ArrayBuffer) break
-    } catch (e) {
-      video = source = link = null
-      lastError = e
-    }
-  }
-  if ((!(source instanceof ArrayBuffer) || !link || !res.ok) && !isLimit) throw '❎ Error: ' + (lastError || 'no puedo descargar el video')
 
-m.reply(isLimit ? ` ≡  *FG MUSIC*
-▢ *📌Título* : ${title}
-▢ *⚖️Peso* : ${video.fileSizeH}
-▢ *El archivo supera el límite de descarga*
-*Gratis :*
-${limit} mb
-▬▬▬▭▭ *300 MB*
-*Premium :*
-300 mb
-▬▬▬▬▬ *300 MB*`: global.wait)
-  let _thumb = {}
-  try { _thumb = { thumbnail: await (await fetch(thumbnail)).buffer() } }
-  catch (e) { }
-  if (!isLimit) await conn.sendFile(m.chat, link, title + '.mp4', `
- ≡  *FG MUSIC*
-  
-▢ *📌Título* : ${title}
-▢ *📟 Ext* : mp4
-▢ *⚖️Peso* : ${video.fileSizeH}
-`.trim(), m, false, {
-    ..._thumb,
-    asDocument: chat.useDocument
-  })
+import axios from 'axios'
+import cheerio from 'cheerio' 
+
+async function fgTtdl (Url) {
+	return new Promise (async (resolve, reject) => {
+		await axios.request({
+			url: "https://ttdownloader.com/",
+			method: "GET",
+			headers: {
+				"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+				"accept-language": "en-US,en;q=0.9,id;q=0.8",
+				"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+				"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
+			}
+		}).then(respon => {
+			const $ = cheerio.load(respon.data)
+			const token = $('#token').attr('value')
+			axios({
+				url: "https://ttdownloader.com/req/",
+				method: "POST",
+				data: new URLSearchParams(Object.entries({url: Url, format: "", token: token})),
+				headers: {
+					"accept": "*/*",
+					"accept-language": "en-US,en;q=0.9,id;q=0.8",
+					"content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+					"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+					"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
+				}
+			}).then(res => {
+				const ch = cheerio.load(res.data)
+				const result = {
+					status: res.status,
+					result: {
+						nowatermark: ch('#results-list > div:nth-child(2)').find('div.download > a').attr('href'),
+						watermark: ch('#results-list > div:nth-child(3)').find('div.download > a').attr('href'),
+						audio: ch('#results-list > div:nth-child(4)').find(' div.download > a').attr('href')
+					}
+				}
+				resolve(result)
+			}).catch(reject)
+		}).catch(reject)
+	})
 }
-handler.help = ['ytmp4 <link yt>']
+
+
+let handler = async (m, { conn, args, usedPrefix, command, text}) => {
+	
+ if(!text) throw `✳️ Ingrese un link de Tiktok\n\n 📌 Ejemplo : ${usedPrefix + command} https://vm.tiktok.com/ZMLTvVagx/?k=1`
+     let ttdl = await fgTtdl(text)
+    if (!args[0].match(/tiktok/gi)) throw `❎ verifica que el link sea de tiktok`
+    await m.reply(wait)
+		
+  if(command.includes('nowm')) {
+      conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
+   } else if (command.includes('audio')) {
+     conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', '', m, null, { mimetype: 'audio/mp4' })
+   } else {
+     //conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
+     conn.sendHydrated(m.chat, `✅ Aquí tienes`, igfg, ttdl.result.watermark, null, null, null, null, [['📹 NOWM', `${usedPrefix + command}`]], m)}
+   }
+   
+}
+handler.help = ['tiktok', 'tiktoknowm']
 handler.tags = ['downloader']
-handler.command = ['ytmp4', 'fgmp4', 'tes' ]
+handler.command = ['tiktok', 'tiktoknowm', 'tiktokaudio'] 
+
+handler.premium = false
 handler.limit = true
-
-handler.exp = 0
-
 
 export default handler
