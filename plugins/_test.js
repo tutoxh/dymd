@@ -1,20 +1,79 @@
-import { webp2mp4 } from '../lib/webp2mp4.js'
-
-let handler = async (m, { conn, usedPrefix, command }) => {
-if (!m.quoted) throw `balas stiker dengan caption *${usedPrefix + command}*`
-   let q = m.quoted ? m.quoted : m
-   let mime = (q.msg || q).mimetype || ''
-    if (!/webp/g.test(mime)) throw `balas stiker dengan caption *${usedPrefix + command}*`
-    let media = await q.download?.()
-    let out = Buffer.alloc(0)
-    if (/webp/g.test(mime)) {
-        out = await webp2mp4(media)
-    }
-    conn.sendFile(m.chat, out, 'out.gif', m, false, { mimetype: 'video/gif', thumbnail: Buffer.alloc(0) })
+const roles = {
+	
+    'Bronce V': 0,
+    'Bronce IV': 5,
+    'Bronce III': 10,
+    'Bronce II': 15,
+    'Bronce I': 20,
+    'Plata V': 25,
+    'Plata IV': 30,
+    'Plata III': 35,
+    'Plata II': 40,
+    'Plata I': 45,
+    'Plata V': 50,
+    'Plata IV': 55,
+    'Plata III': 60,
+    'Plata II': 65,
+    'Plata I': 70,
+    'Oro V': 75,
+    'Oro IV': 80,
+    'Oro III': 85,
+    'Oro II': 90,
+    'Oro I': 95,
+    'Platino V': 100,
+    'Platino IV': 105,
+    'Platino III': 110,
+    'Platino II': 115,
+    'Platino I': 120,
+    'Diamante V': 125,
+    'Diamante IV': 130,
+    'Diamante III': 135,
+    'Diamante II': 140,
+    'Diamante I': 145,
+    'Maestros V': 150,
+    'Maestros IV': 155,
+    'Maestros III': 160,
+    'Maestros II': 165,
+    'Maestros I': 170,
+    'Campeones V': 175,
+    'Campeones IV': 180,
+    'Campeones III': 185,
+    'Campeones II': 190,
+    'Campeones I': 195,
+    'Gran Maestro V': 200,
+    'Gran Maestro IV': 205,
+    'Gran Maestro III': 210,
+    'Gran Maestro II': 215,
+    'Gran Maestro I': 220,
+    'Titan V': 225,
+    'Titan IV': 230,
+    'Titan III': 235,
+    'Titan II': 240,
+    'Titan I': 245,
+    'Leyenda V': 250,
+    'Leyenda IV': 255,
+    'Leyenda III': 260,
+    'Leyenda II': 265,
+    'Leyenda I': 270,
+    'Mítico V': 275,
+    'Mítico IV': 280,
+    'Mítico III': 285,
+    'Mítico II': 290,
+    'Mítico I': 295,
+    'Gloria Mítica': 300
+    'Esmeralda V': 350,
+    'Esmeralda IV': 400,
+    'Esmeralda III': 450,
+    'Esmeralda II': 480,
+    'Esmeralda I': 500,
+    'Dragón rey estrella'': 1000
 }
 
-handler.help = ['togif (reply media)', 'tovideo <reply>']
-handler.tags = ['sticker']
-handler.command = /^(togif)$/i
-
-export default handler
+export function before(m) {
+        let user = db.data.users[m.sender]
+        let level = user.level
+        let role = (Object.entries(roles).sort((a, b) => b[1] - a[1]).find(([, minLevel]) => level >= minLevel) || Object.entries(roles)[0])[0]
+        user.role = role
+        return !0
+    
+}
