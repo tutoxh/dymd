@@ -1,31 +1,20 @@
+import { webp2mp4 } from '../lib/webp2mp4.js'
 
-import yts from 'yt-search'
-
-let handler = async (m, { text }) => {
-  if (!text) throw '✳️ Que quieres que busque en YouTube?'
-  let results = await yts(text)
-  let tes = results.all
-  let teks = results.all.map(v => {
-    switch (v.type) {
-      case 'video': return `
-▢ ${v.title}
-▢ *Link* : ${v.url}
-▢ *Duración* : ${v.timestamp}
-▢ *Subido :* ${v.ago}
-▢ *Vistas:* ${v.views}
-
-      `.trim()
-      case 'canal': return `
-▢ *${v.name}* (${v.url})
-▢${v.subCountLabel} (${v.subCount}) Suscribirse
-▢ ${v.videoCount} videos
-`.trim()
+let handler = async (m, { conn, usedPrefix, command }) => {
+if (!m.quoted) throw `balas stiker dengan caption *${usedPrefix + command}*`
+   let q = m.quoted ? m.quoted : m
+   let mime = (q.msg || q).mimetype || ''
+    if (!/webp/g.test(mime)) throw `balas stiker dengan caption *${usedPrefix + command}*`
+    let media = await q.download?.()
+    let out = Buffer.alloc(0)
+    if (/webp/g.test(mime)) {
+        out = await webp2mp4(media)
     }
-  }).filter(v => v).join('\n\n________________________\n\n')
-  conn.sendFile(m.chat, tes[0].thumbnail, 'yts.jpeg', teks, m)
+    conn.sendFile(m.chat, out, 'out.gif', m, false, { mimetype: 'video/gif', thumbnail: Buffer.alloc(0) })
 }
-handler.help = ['ytsearch <busca>'] 
-handler.tags = ['tools']
-handler.command = ['ytsearch', 'tes'] 
+
+handler.help = ['togif (reply media)', 'tovideo <reply>']
+handler.tags = ['sticker']
+handler.command = /^(togif)$/i
 
 export default handler
