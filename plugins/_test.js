@@ -39,7 +39,7 @@ ${limit} mb
   asDocument: chat.useDocument
 })
 } catch (e) {
-    return await conn.sendButton(m.chat, 'Ocurrió un Error', 'Intenta de nuevo', 'Descargar', `${usedPrefix + command} ${args[0]}`)
+    return await m.reply(`Ocurrió un Error`)
   }
 }
 handler.help = ['ytmp4 <link yt>']
