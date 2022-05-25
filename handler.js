@@ -487,7 +487,8 @@ export async function handler(chatUpdate) {
                 else
                     m.exp += xp
                 if (!isPrems && plugin.limit && global.db.data.users[m.sender].limit < plugin.limit * 1) {
-                    this.reply(m.chat, `✳️ Tus diamantes se agotaron \n use el siguiente comando para comprar más diamantes \n*${usedPrefix}buy* <cantidad> \n*${usedPrefix}buyall*`, m)
+                    //this.reply(m.chat, `✳️ Tus diamantes se agotaron \n use el siguiente comando para comprar más diamantes \n*${usedPrefix}buy* <cantidad> \n*${usedPrefix}buyall*`, m)
+                    this.sendButton(m.chat, `✳️ Tus diamantes se agotaron \n use el siguiente comando para comprar más diamantes \n*${usedPrefix}buy* <cantidad> \n*${usedPrefix}buyall*`, igfg, null, [['Buy', `${usedPrefix}buy`], ['Buy All', `${usedPrefix}buyall`]], m)
                     continue // Limit habis
                 }
                 if (plugin.level > _user.level) {
