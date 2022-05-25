@@ -57,7 +57,7 @@ let handler = async (m, { conn, args, usedPrefix, command, text}) => {
      conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', '', m, null, { mimetype: 'audio/mp4' })
    } else {
      //conn.sendFile(m.chat, ttdl.result.watermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
-     conn.sendHydrated(m.chat, `✅ Aquí tienes`, igfg, ttdl.result.watermark, null, null, null, null, [['📹 NOWM', `${usedPrefix + command}`]], m)}
+     conn.sendHydrated(m.chat, `✅ Aquí tienes`, igfg, ttdl.result.watermark, null, null, null, null, [['📹 NOWM', `${usedPrefix + command}`]], m)
    }
    
 }
