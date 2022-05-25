@@ -44,7 +44,7 @@ ${limit} mb
 }
 handler.help = ['ytmp4 <link yt>']
 handler.tags = ['downloader']
-handler.command = ['ytmp4', 'fgmp4', 'tes'] 
+handler.command = ['goo'] 
 
 handler.limit = true
 
