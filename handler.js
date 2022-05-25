@@ -280,7 +280,7 @@ export async function handler(chatUpdate) {
                     sBye: '',
                     sPromote: '',
                     sDemote: '',
-                    delete: true,
+                    delete: false,
                     antiLink: false,
                     viewonce: false,
                     useDocument: true,
@@ -688,7 +688,6 @@ export async function deleteUpdate(message) {
 
 Para desactivar esta función, escriba 
 */off antidelete*
-*.enable delete*
 `.trim(), msg, {
             mentions: [participant]
         })
