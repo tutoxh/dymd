@@ -8,7 +8,7 @@ global.owner = [
   ['5493885839638']
 ] //Numeros de owner 
 
-global.mods = [] // Moderadores
+global.mods = ['573125484672'] // Moderadores
 global.prems = ['50489079501', '5219631769130', '573125484672']  // El usuario Premium tiene diamantes ilimitado
 global.APIs = { // API Prefix
   // name: 'https://website'
@@ -35,24 +35,11 @@ global.APIKeys = { // APIKey Here
 global.packname = 'dylux-bot'
 global.author = '@fg98._'
 global.igfg = '\n▢ Sígueme en Instagram\nhttps://www.instagram.com/fg98._\n' 
+global.fgsc = 'https://github.com/FG98F/dylux-fg' 
 
 global.wait = '*⌛ _Cargando..._ ▬▬▬▭*'
 
 global.multiplier = 69 // Cuanto más alto, más difícil subir de nivel
-
-global.rpg = {
-  emoticon(string) {
-    string = string.toLowerCase()
-    let emot = {
-      level: '🏆',
-      limit: '💎',
-      exp: '🕹️'
-    }
-    let results = Object.keys(emot).map(v => [v, new RegExp(v, 'gi')]).filter(v => v[1].test(string))
-    if (!results.length) return ''
-    else return emot[results[0][0]]
-  }
-}
 
 
 let file = fileURLToPath(import.meta.url)
