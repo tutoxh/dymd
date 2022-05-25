@@ -618,7 +618,7 @@ export async function participantsUpdate({ id, participants, action }) {
     let text = ''
     switch (action) {
         case 'add':
-        case 'remove':
+        /*case 'remove':
             if (chat.welcome) {
                 let groupMetadata = await this.groupMetadata(id) || (conn.chats[id] || {}).metadata
                 for (let user of participants) {
@@ -633,7 +633,58 @@ export async function participantsUpdate({ id, participants, action }) {
                     }
                 }
             }
+            break*/
+            
+            case 'add':
+        case 'remove':
+            if (chat.welcome) {
+                let groupMetadata = await this.groupMetadata(id) || (conn.chats[id] || {}).metadata
+                for (let user of participants) {
+                    let pp = await this.profilePictureUrl(user).catch(_ => './src/avatar_contact.png')
+                  //How fo fix
+                    try {
+                    } catch (e) {
+                    } finally {
+                        text = (action === 'add' ? (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await this.getName(id)).replace('@desc', groupMetadata.desc?.toString() || 'unknow') :
+                            (chat.sBye || this.bye || conn.bye || 'Bye, @user!')).replace('@user', '@' + user.split('@')[0])
+                       
+  let lea = await new Canvas.Goodbye()
+  .setUsername(`${await conn.getName(user)}`)
+  .setDiscriminator(`337631`)
+  .setMemberCount(`${groupMetadata.participants.length}`)
+  .setGuildName(`${groupMetadata.subject}`)
+  .setAvatar(`${pp}`)
+  .setColor("border", "#000000")
+  .setColor("username-box", "#000000")
+  .setColor("discriminator-box", "#000000")
+  .setColor("message-box", "#000000")
+  .setColor("title", "#ffffff")
+  .setColor("avatar", "#000000")
+  .setBackground("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaBCkFVUY0nJxj1DPqtvAwrf7qfvj6e-Rv-A&usqp=CAU")
+  .toAttachment();
+  var buffo = await lea.toBuffer()
+
+ let wel = await new Canvas.Welcome()
+  .setUsername(`${await conn.getName(user)}`)
+  .setDiscriminator(`445577`)
+  .setMemberCount(`${groupMetadata.participants.length}`)
+  .setGuildName(`${groupMetadata.subject}`)
+  .setAvatar(`${pp}`)
+  .setColor("border", "#000000")
+  .setColor("username-box", "#000000")
+  .setColor("discriminator-box", "#000000")
+  .setColor("message-box", "#000000")
+  .setColor("title", "#ffffff")
+  .setColor("avatar", "#000000")
+  .setBackground("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF7c3n7snGnpzS676fXaU2yxSjGsFNrCURXw&usqp=CAU")
+  .toAttachment();
+  var buffa = await wel.toBuffer()
+                        this.sendButton(id, text, igfg, action === 'add' ? wel.toBuffer() : lea.toBuffer(), [["Menu", ".menu"]], null, false, { mentions: [user] })
+                    }
+                }
+            }
             break
+            
         case 'promote':
         case 'promover':
             text = (chat.sPromote || this.spromote || conn.spromote || '@user ahora es administrador')
