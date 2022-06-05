@@ -3,10 +3,10 @@ let handler = async (m, { usedPrefix, command, text }) => {
     if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : false
     else who = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.chat
     let user = db.data.users[who]
-    if (!who) return m.reply(`t✳️ Menciona al usuario con @\n\n📌 *Ejemplo* :\n${usedPrefix + command} @${m.sender.split`@`[0]}`)
+    if (!who) return m.reply(`✳️ Menciona al usuario con @\n\n📌 *Ejemplo* :\n${usedPrefix + command} @${m.sender.split`@`[0]}`)
     user.premium = false
     user.premiumTime = 0
-    m.reply(`✅ Premium removido *${user.name}* Ya no eres premium`)
+    m.reply(`✅ Premium removido \n\n@${who.split('@')[0]} Ya no eres premium`)
 }
 handler.help = ['delprem @user']
 handler.tags = ['owner']
