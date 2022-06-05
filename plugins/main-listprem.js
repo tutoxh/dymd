@@ -12,11 +12,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
   
 await conn.sendButton(m.chat, `
 ≡ *USUARIOS PREMIUM*
-┌─⊷  *MI PREMIUM*
-▢ *Nombre:* ${conn.getName(m.sender)}
-${prem ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expira:* Expirado'}
-└───────────
-•·–––––––––––––––––––––·•
+
 ${sortedP.slice(0, len).map(({ jid, name, premiumTime, registered }, i) => `\n\n┌───────────▢ *Nombre:* ${registered ? name : conn.getName(jid)}
 ${premiumTime > 0 ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expirado*'}`).join`\n└───────────`}
 └───────────
