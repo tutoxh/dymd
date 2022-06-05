@@ -6,21 +6,13 @@ import fetch from 'node-fetch'
 let handler = async (m, { conn, usedPrefix, command}) => {
 
 
-let pp = 'https://i.ibb.co/V2nDN32/avatar-contact.jpg'
 let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-
-try {
-pp = await conn.profilePictureUrl(who)
-} catch (e) {
-
-} finally {
-
-
+let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png')
 let { name, exp, limit, lastclaim, registered, regTime, age, level, role } = global.db.data.users[who]
 let username = conn.getName(who)
-
 let prem = global.prems.includes(who.split`@`[0])
 let sn = createHash('md5').update(who).digest('hex')
+
 let str = `
 ┌───「 *PERFIL* 」
 ▢ *🔖 Nombres:* 
@@ -33,13 +25,15 @@ let str = `
 ▢ *📇 Registrado :* ${registered ? 'Si': 'No'}
 ▢ *⭐ Premium* : ${prem ? 'Si' : 'No'}
 └──────────────`
-conn.sendButton(m.chat, str, igfg, await(await fetch(pp)).buffer(), [['👍🏻', ' '], ['🖤', ' ']], m)
+conn.sendButton(m.chat, str, igfg, pp, [['👍🏻', ' '], ['🖤', ' ']], m)
 /*
   let mentionedJid = [who]
     conn.sendFile(m.chat, pp, 'perfil.jpg', str, m, false, { contextInfo: { mentionedJid }})
     */
-}}
+
+}
 handler.help = ['perfil @user']
 handler.tags = ['group']
 handler.command = ['profile', 'perfil'] 
+
 export default handler
