@@ -1,21 +1,27 @@
-let handler = async (m, { conn, text }) => {
 
+let handler = async (m, { conn, text, usedPrefix, command }) => {
     let who
-    if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text
+    if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false
     else who = m.chat
-    if (!who) throw `✳️ Menciona a la persona`
-    if (global.prems.includes(who.split`@`[0])) throw '✳️ El usuario Mensionado Ya es premium'
-    global.prems.push(`${who.split`@`[0]}`)
-    conn.reply(m.chat, `*▢ PREMIUM*\n\n@${who.split`@`[0]} ahora te conviertes en un usuario premium`, m, {
-        contextInfo: {
-            mentionedJid: [who]
-        }
-    })
-
+    let user = db.data.users[who]
+    if (!who) throw `tag or mention someone!`
+    let txt = text.replace('@' + who.split`@`[0], '').trim()
+    if (!txt) throw `where the number of days?`
+    if (isNaN(txt)) return m.reply(`only number!\n\nexample:\n${usedPrefix + command} @${m.sender.split`@`[0]} 7`)
+    var jumlahHari = 86400000 * txt
+    var now = new Date() * 1
+    if (now < user.premiumTime) user.premiumTime += jumlahHari
+    else user.premiumTime = now + jumlahHari
+user.premium = true
+    m.reply(`âœ”ï¸ Success
+ðŸ“› *Name:* ${user.name}
+ðŸ“† *Days:* ${txt} days
+ðŸ“‰ *Countdown:* ${user.premiumTime - now}`)
 }
-handler.help = ['addprem @user']
+handler.help = ['addprem <@tag> <días>']
 handler.tags = ['owner']
 handler.command = ['addprem', 'addpremium'] 
+
 handler.group = true
 handler.rowner = true
 
