@@ -6,7 +6,12 @@ let handler = async (m, { usedPrefix, command, text }) => {
     if (!who) return m.reply(`✳️ Menciona al usuario con @\n\n📌 *Ejemplo* :\n${usedPrefix + command} @${m.sender.split`@`[0]}`)
     user.premium = false
     user.premiumTime = 0
-    m.reply(`✅ Premium removido \n\n@${who.split('@')[0]} Ya no eres premium`)
+    conn.reply(m.chat, `✅ Premium removido \n\n@${who.split('@')[0]} Ya no eres premium`, m, {
+        contextInfo: {
+            mentionedJid: [who]
+        }
+    })
+    
 }
 handler.help = ['delprem @user']
 handler.tags = ['owner']
