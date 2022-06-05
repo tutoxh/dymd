@@ -13,15 +13,12 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 await conn.sendButton(m.chat, `
 ≡ *USUARIOS PREMIUM*
 ┌─⊷  *MI PREMIUM*
-▢ *Name:* ${conn.getName(m.sender)}
+▢ *Nombre:* ${conn.getName(m.sender)}
 ${prem ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expira:* Expirado'}
 └───────────
 •·–––––––––––––––––––––·•
-
-┌─⊷  *PREMIUM* 
-${sortedP.slice(0, len).map(({ jid, name, premiumTime, registered }, i) => `
-▢ ${registered ? name : conn.getName(jid)}
-▢ ${premiumTime > 0 ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expirado*'}`).join`\n└───────────`}
+${sortedP.slice(0, len).map(({ jid, name, premiumTime, registered }, i) => `\n\n┌───────────▢ *Nombre:* ${registered ? name : conn.getName(jid)}
+${premiumTime > 0 ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expirado*'}`).join`\n└───────────`}
 └───────────
 
 `.trim(), igfg, null, [[`ꨄ︎ Donar`, `${usedPrefix}donate`]], m)
@@ -42,7 +39,7 @@ function clockString(ms) {
   let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000) % 24
   let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
   let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return [' ', ye, ' *Años*', ' ', mo, ' *Meses*', ' ', d, ' *Días*', ' ', h, ' *Horas*', ' ', m, ' *Minutos*', ' ', s, ' *Segundos*'].map(v => v.toString().padStart(2, 0)).join('')
+  return ['▢ ', ye, ' *Años*\n', '▢ ', mo, ' *Meses*\n', '▢ ', d, ' *Días*\n', '▢ ', h, ' *Horas*\n', '▢ ', m, ' *Minutos*\n', '▢ ', s, ' *Segundos*'].map(v => v.toString().padStart(2, 0)).join('')
 }
 
 function sort(property, ascending = true) {
