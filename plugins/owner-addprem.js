@@ -14,13 +14,20 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     else user.premiumTime = now + jumlahHari
 user.premium = true
     
-m.reply(`
+conn.reply(m.chat, `
 ✅ PREMIUM
+
+@${who.split`@`[0]} ahora te conviertes en un usuario premium
 ┌───────────
 ▢ *Nombre:* ${user.name}
-▢ *Caduca en :* ${txt} Días
+▢ *Expira en :* ${txt} Días
 └───────────
-`)
+`, m, {
+        contextInfo: {
+            mentionedJid: [who]
+        }
+    })
+
 }
 handler.help = ['addprem <@tag> <días>']
 handler.tags = ['owner']
