@@ -10,11 +10,6 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
   let sortedP = user.map(toNumber('premiumTime')).sort(sort('premiumTime'))
   let len = args[0] && args[0].length > 0 ? Math.min(100, Math.max(parseInt(args[0]), 10)) : Math.min(10, sortedP.length)
   
-  
-  let prem = global.prems.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').filter(v => v != conn.user.jid)
-  conn.reply(m.chat, `≡ *PREMIUM PERMANENTE*` + `\n` + prem.map(v => '▢ @' + v.replace(/@.+/, '')).join`\n`, m, { contextInfo: { mentionedJid: prem } })
-
-
 await conn.sendButton(m.chat, `
 ≡ *USUARIOS PREMIUM*
 ${sortedP.slice(0, len).map(({ jid, name, premiumTime, registered }, i) => `\n┌─⊷ *EXPIRA EN*
