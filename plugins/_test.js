@@ -1,7 +1,7 @@
 import { addExif } from '../lib/sticker.js'
 
 
-let handler = async (m, { conn, text }) => {
+let handler = async (m, { conn, text, args }) => {
   if (!m.quoted) throw 'El  sticker!'
   let stiker = false
   
