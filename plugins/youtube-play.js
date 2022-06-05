@@ -8,15 +8,14 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
   await conn.sendHydrated(m.chat, `
   ≡ *FG MUSIC*
 ┌──────────────
-▢ 📌  *Título* : ${title}
+▢ 📌 *Título* : ${title}
 ▢ 📆 *Publicado:* ${publishedTime}
 ▢ ⌚ *Duración:* ${durationH}
 ▢ 👀 *Vistas:* ${viewH}
-▢ 🔗 *Url:* ${url}
 └──────────────
-  `.trim(), igfg, thumbnail, 'https://youtube.com/fg98f', 'YouTube', null, null, [
-    ['🎶 MP3', `${usedPrefix}yta ${url} yes`],
-    ['🎥 MP4', `${usedPrefix}ytv ${url} yes`]
+  `.trim(), igfg, thumbnail, fgyt, 'YouTube', null, null, [
+    ['🎶 MP3', `${usedPrefix}fgmp3 ${url} yes`],
+    ['🎥 MP4', `${usedPrefix}fgmp4 ${url} yes`]
   ], m)
 }
 handler.help = ['play']
