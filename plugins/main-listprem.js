@@ -1,5 +1,5 @@
 
-let handler = async (m, { conn, args }) => {
+let handler = async (m, { conn, args, usedPrefix, command }) => {
   let user = Object.entries(global.db.data.users).filter(user => user[1].premiumTime).map(([key, value]) => {
     return { ...value, jid: key }
   })
