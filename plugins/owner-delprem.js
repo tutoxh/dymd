@@ -1,22 +1,17 @@
-let handler = async (m, { conn, text }) => {
-
+let handler = async (m, { usedPrefix, command, text }) => {
     let who
-    if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text
-    else who = m.chat
-    if (!who) throw `✳️ Menciona al usuario con @`
-    if (!global.prems.includes(who.split`@`[0])) throw '✳️ El usuario no es usuario Premiun'
-    let index = global.prems.findIndex(v => (v.replace(/[^0-9]/g, '') + '@s.whatsapp.net') === (who.replace(/[^0-9]/g, '') + '@s.whatsapp.net'))
-    global.prems.splice(index, 1)
-    conn.reply(m.chat, `✅ Premium removido \n\n@${who.split('@')[0]} Ya no eres premium`, m, {
-        contextInfo: {
-            mentionedJid: [who]
-        }
-    })
-
+    if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : false
+    else who = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.chat
+    let user = db.data.users[who]
+    if (!who) return m.reply(`t✳️ Menciona al usuario con @\n\n📌 *Ejemplo* :\n${usedPrefix + command} @${m.sender.split`@`[0]}`)
+    user.premium = false
+    user.premiumTime = 0
+    m.reply(`✅ Premium removido *${user.name}* Ya no eres premium`)
 }
 handler.help = ['delprem @user']
 handler.tags = ['owner']
 handler.command = ['delprem', 'delpremium'] 
+
 handler.group = true
 handler.rowner = true
 
