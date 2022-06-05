@@ -1,42 +1,39 @@
+import { createHash } from 'crypto'
 import PhoneNumber from 'awesome-phonenumber'
 import fetch from 'node-fetch'
-let handler = async (m, { conn }) => {
-  let _pp = './src/avatar_contact.png'
-  let user = db.data.users[m.sender]
-  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png')
-    let { premium, level, limit, exp, lastclaim, registered, regTime, age } = global.db.data.users[m.sender]
-    let username = conn.getName(who)
-    let name = conn.getName(who)
-   
-    let str = `
-]──────────❏ *PROFILE* ❏──────────[
-💌 • *Name:* ${username} 
-🎐 • *Username:* ${registered ? name : ''}
-📧 • *Tag:* @${who.replace(/@.+/, '')}
-📞 • *Number:* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-🔗 • *Link:* https://wa.me/${who.split`@`[0]}
-🎨 • *Age:* ${registered ? age : ''}
-${readMore}
-🌟 • *Premium:* ${premium ? "✅" :"❌"}
-⏰ • *PremiumTime:* 
-${clockString(user.premiumTime)}
-📑 • *Registered:* ${registered ? '✅': '❌'}
-`.trim()
-    conn.sendButton(m.chat, str, igfg, pp, [['👍🏻', ' '], ['🖤', ' ']], m)
+
+
+let handler = async (m, { conn, usedPrefix, command}) => {
+
+
+let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png')
+let { name, exp, limit, lastclaim, registered, regTime, age, level, role } = global.db.data.users[who]
+let username = conn.getName(who)
+let prem = global.prems.includes(who.split`@`[0])
+let sn = createHash('md5').update(who).digest('hex')
+
+let str = `
+┌───「 *PERFIL* 」
+▢ *🔖 Nombres:* 
+   • ${username} ${registered ? '\n   • ' + name + ' ': ''}
+▢ *📱Numero:* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
+▢ *🔗Link:* wa.me/${who.split`@`[0]}${registered ? '\n▢ *🎈Edad*: ' + age + ' años' : ''}
+▢ *💎 Diamantes :* ${limit}
+▢ *🆙 Nivel* : ${level}
+▢ *🥇Rango:* ${role}
+▢ *📇 Registrado :* ${registered ? 'Si': 'No'}
+▢ *⭐ Premium* : ${prem ? 'Si' : 'No'}
+└──────────────`
+conn.sendButton(m.chat, str, igfg, pp, [['👍🏻', ' '], ['🖤', ' ']], m)
+/*
+  let mentionedJid = [who]
+    conn.sendFile(m.chat, pp, 'perfil.jpg', str, m, false, { contextInfo: { mentionedJid }})
+    */
+
 }
-handler.help = ['profile [@user]']
-handler.tags = ['exp']
+handler.help = ['perfil @user']
+handler.tags = ['group']
 handler.command = ['tes'] 
+
 export default handler
-
-const more = String.fromCharCode(8206)
-const readMore = more.repeat(4001)
-
-function clockString(ms) {
-  let d = isNaN(ms) ? '--' : Math.floor(ms / 86400000)
-  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000) % 24
-  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
-  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return [d, ' *Days ☀️*\n ', h, ' *Hours 🕐*\n ', m, ' *Minute ⏰*\n ', s, ' *Second ⏱️* '].map(v => v.toString().padStart(2, 0)).join('')
-}
