@@ -1,20 +1,24 @@
+//
+let { MessageType } = (await import('@adiwajshing/baileys')).default
 import { sticker } from '../lib/sticker.js'
-
-let handler = async (m, { conn }) => {
-	
-  let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-  let marah = global.API('https://some-random-api.ml', '/canvas/triggered', {
-    avatar: await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png'), 
-  })
-let stiker = await sticker(false, marah, global.packname, global.author)
-  if (stiker) return await conn.sendFile(m.chat, stiker, null, { asSticker: true }, m)
-  
-  throw stiker.toString()
+let handler  = async (m, { conn, args }) => {
+  let stiker = false
+try {
+    let q = m.quoted ? m.quoted : m
+    let mime = (q.msg || q).mimetype || ''
+    if (/image|video/.test(mime)) {
+      let img = await q.download()
+      if (!img) throw 'Reply stiker nya!'
+      stiker = await sticker(img, false, '🍀', '🎮 • Discord :\n⤷ https://discord.gg/WEJQjugTY7')
+    } else if (args[0]) stiker = await sticker(false, args[0], '🍀', '🎮 • Discord :\n⤷ https://discord.gg/WEJQjugTY7')
+  } finally {
+    if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+    else throw 'Conversion failed'
+  }
 }
-
-
-handler.help = ['trigger <@user>']
+handler.help = ['colong']
 handler.tags = ['sticker']
-handler.command = ['trigger', 'triggered', 'ger'] 
+handler.command = ['tes'] 
+
 
 export default handler
