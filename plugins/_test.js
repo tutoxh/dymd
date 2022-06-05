@@ -1,40 +1,20 @@
-import { createHash } from 'crypto'
-import PhoneNumber from 'awesome-phonenumber'
-import fetch from 'node-fetch'
+import { sticker } from '../lib/sticker.js'
 
-
-let handler = async (m, { conn, usedPrefix, command}) => {
-
-
-let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png')
-let { name, exp, limit, lastclaim, registered, regTime, age, level, role } = global.db.data.users[who]
-let username = conn.getName(who)
-let prem = global.prems.includes(who.split`@`[0])
-let sn = createHash('md5').update(who).digest('hex')
-let premf = global.db.data.users[m.sender].premium
-
-let str = `
-┌───「 *PERFIL* 」
-▢ *🔖 Nombres:* 
-   • ${username} ${registered ? '\n   • ' + name + ' ': ''}
-▢ *📱Numero:* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-▢ *🔗Link:* wa.me/${who.split`@`[0]}${registered ? '\n▢ *🎈Edad*: ' + age + ' años' : ''}
-▢ *💎 Diamantes :* ${limit}
-▢ *🆙 Nivel* : ${level}
-▢ *🥇Rango:* ${role}
-▢ *📇 Registrado :* ${registered ? 'Si': 'No'}
-▢ *⭐ Premium* : ${premf ? 'Si' : 'No'}
-└──────────────`
-conn.sendButton(m.chat, str, igfg, pp, [['👍🏻', ' '], ['🖤', ' ']], m)
-/*
-  let mentionedJid = [who]
-    conn.sendFile(m.chat, pp, 'perfil.jpg', str, m, false, { contextInfo: { mentionedJid }})
-    */
-
+let handler = async (m, { conn }) => {
+	
+  let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+  let marah = global.API('https://some-random-api.ml', '/canvas/triggered', {
+    avatar: await conn.profilePictureUrl(who).catch(_ => 'https://i.ibb.co/PZNv21q/Profile-FG98.jpg'),
+  })
+let stiker = await sticker(false, marah, global.packname, global.author)
+  if (stiker) return await conn.sendFile(m.chat, stiker, null, { asSticker: true }, m)
+  
+  throw stiker.toString()
 }
-handler.help = ['perfil @user']
-handler.tags = ['group']
-handler.command = ['tes'] 
+
+
+handler.help = ['trigger <@user>']
+handler.tags = ['sticker']
+handler.command = ['trigger', 'triggered', 'ger'] 
 
 export default handler
