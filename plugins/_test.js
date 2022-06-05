@@ -1,24 +1,37 @@
-//
-let { MessageType } = (await import('@adiwajshing/baileys')).default
-import { sticker } from '../lib/sticker.js'
-let handler  = async (m, { conn, args }) => {
+import { addExif } from '../lib/sticker.js'
+
+
+let handler = async (m, { conn, text }) => {
+  if (!m.quoted) throw 'El  sticker!'
   let stiker = false
-try {
-    let q = m.quoted ? m.quoted : m
-    let mime = (q.msg || q).mimetype || ''
-    if (/image|video/.test(mime)) {
-      let img = await q.download()
-      if (!img) throw 'Reply stiker nya!'
-      stiker = await sticker(img, false, '🍀', '🎮 • Discord :\n⤷ https://discord.gg/WEJQjugTY7')
-    } else if (args[0]) stiker = await sticker(false, args[0], '🍀', '🎮 • Discord :\n⤷ https://discord.gg/WEJQjugTY7')
+  
+  
+  try {
+  	
+  let anu = args.join(" ").split("|");
+       let a = anu[0] !== "" ? anu[0] : `🔮 DyLux ┃ ᴮᴼᵀ`;
+       let b = typeof anu[1] !== "undefined" ? anu[1] : `💎 @fg98._`;    
+    let [packname, ...author] = a.split`|`
+    let author = b
+  
+  
+    let [packname, ...author] = text.split('|')
+    author = (author || []).join('|')
+    let mime = m.quoted.mimetype || ''
+    if (!/webp/.test(mime)) throw 'Responde a un sticker'
+    let img = await m.quoted.download()
+    if (!img) throw 'Responde a un sticker!'
+    stiker = await addExif(img, packname || '', author || '')
+  } catch (e) {
+    console.error(e)
+    if (Buffer.isBuffer(e)) stiker = e
   } finally {
-    if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
-    else throw 'Conversion failed'
+    if (stiker) conn.sendFile(m.chat, stiker, 'wm.webp', '', m, false, { asSticker: true })
+    else throw 'La conversión falló'
   }
 }
-handler.help = ['colong']
+handler.help = ['take <nombre>|<autor>']
 handler.tags = ['sticker']
 handler.command = ['tes'] 
-
 
 export default handler
