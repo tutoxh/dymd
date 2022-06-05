@@ -18,7 +18,7 @@ m.reply(`
 ✅ PREMIUM
 ┌───────────
 ▢ *Nombre:* ${user.name}
-▢ *Días:* ${txt} days
+▢ *Caduca en :* ${txt} Días
 └───────────
 `)
 }
