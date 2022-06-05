@@ -24,7 +24,7 @@ ${sortedP.slice(0, len).map(({ jid, name, premiumTime, registered }, i) => `
 ▢ ${premiumTime > 0 ? `${clockString (premiumTime - new Date() * 1)}` : '▢ *Expirado*'}`).join`\n└───────────`}
 └───────────
 
-`.trim(), wm, null, [[`ꨄ︎ Donar`, `${usedPrefix}donate`]], m)
+`.trim(), igfg, null, [[`ꨄ︎ Donar`, `${usedPrefix}donate`]], m)
 setTimeout(() => {
     if (db.data.chats[m.chat].deletemedia) conn.deleteMessage(m.chat, key)
   }, db.data.chats[m.chat].deletemediaTime)
