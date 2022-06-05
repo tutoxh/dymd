@@ -1,70 +1,42 @@
-
-import axios from 'axios'
-import cheerio from 'cheerio' 
-
-async function fgTtdl (Url) {
-	return new Promise (async (resolve, reject) => {
-		await axios.request({
-			url: "https://ttdownloader.com/",
-			method: "GET",
-			headers: {
-				"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-				"accept-language": "en-US,en;q=0.9,id;q=0.8",
-				"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-				"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
-			}
-		}).then(respon => {
-			const $ = cheerio.load(respon.data)
-			const token = $('#token').attr('value')
-			axios({
-				url: "https://ttdownloader.com/req/",
-				method: "POST",
-				data: new URLSearchParams(Object.entries({url: Url, format: "", token: token})),
-				headers: {
-					"accept": "*/*",
-					"accept-language": "en-US,en;q=0.9,id;q=0.8",
-					"content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-					"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-					"cookie": "_ga=GA1.2.1240046717.1620835673; PHPSESSID=i14curq5t8omcljj1hlle52762; popCookie=1; _gid=GA1.2.1936694796.1623913934"
-				}
-			}).then(res => {
-				const ch = cheerio.load(res.data)
-				const result = {
-					status: res.status,
-					result: {
-						nowatermark: ch('#results-list > div:nth-child(2)').find('div.download > a').attr('href'),
-						watermark: ch('#results-list > div:nth-child(3)').find('div.download > a').attr('href'),
-						audio: ch('#results-list > div:nth-child(4)').find(' div.download > a').attr('href')
-					}
-				}
-				resolve(result)
-			}).catch(reject)
-		}).catch(reject)
-	})
+import PhoneNumber from 'awesome-phonenumber'
+import fetch from 'node-fetch'
+let handler = async (m, { conn }) => {
+  let _pp = './src/avatar_contact.png'
+  let user = db.data.users[m.sender]
+  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png')
+    let { premium, level, limit, exp, lastclaim, registered, regTime, age } = global.db.data.users[m.sender]
+    let username = conn.getName(who)
+    let name = conn.getName(who)
+    let fkon = { key: { fromMe: false, participant: `${m.sender.split`@`[0]}@s.whatsapp.net`, ...(m.chat ? { remoteJid: '16504228206@s.whatsapp.net' } : {}) }, message: { contactMessage: { displayName: `${name}`, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:;a,;;;\nFN:${name}\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`}}}
+    let str = `
+]──────────❏ *PROFILE* ❏──────────[
+💌 • *Name:* ${username} 
+🎐 • *Username:* ${registered ? name : ''}
+📧 • *Tag:* @${who.replace(/@.+/, '')}
+📞 • *Number:* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
+🔗 • *Link:* https://wa.me/${who.split`@`[0]}
+🎨 • *Age:* ${registered ? age : ''}
+${readMore}
+🌟 • *Premium:* ${premium ? "✅" :"❌"}
+⏰ • *PremiumTime:* 
+${clockString(user.premiumTime)}
+📑 • *Registered:* ${registered ? '✅': '❌'}
+`.trim()
+    conn.sendButton(m.chat, str, botdate, pp, [[`${registered ? 'Menu':'Verify'}`, `${user.registered ? '.menu':'.verify'}`]], fkon, { contextInfo: { mentionedJid: [who], forwardingScore: 999, isForwarded: true}})
 }
-
-
-let handler = async (m, { conn, args, usedPrefix, command, text}) => {
-	
- if(!text) throw `✳️ Ingrese un link de Tiktok\n\n 📌 Ejemplo : ${usedPrefix + command} https://vm.tiktok.com/ZMLTvVagx/?k=1`
-     let ttdl = await fgTtdl(text)
-    if (!args[0].match(/tiktok/gi)) throw `❎ verifica que el link sea de tiktok`
-    await m.reply(wait)
-		
-  if(command.includes('nowm')) {
-      conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp4', `✅ Aquí tienes`.trim(), m)
-   } else if (command.includes('audio')) {
-     conn.sendFile(m.chat, ttdl.result.nowatermark, 'tiktok.mp3', null, m, null, { mimetype: 'audio/mp4' })
-   } else {
-     conn.sendHydrated(m.chat, `✅ Aquí tienes`, igfg, ttdl.result.watermark, null, null, null, null, [['📹 NOWM', `${usedPrefix}tiktoknowm ${text}`]], m)
-   }
-   
-}
-handler.help = ['tiktok', 'tiktoknowm']
-handler.tags = ['downloader']
-handler.command = ['tiktok', 'tiktoknowm', 'tiktokaudio'] 
-
-handler.premium = false
-handler.limit = true
-
+handler.help = ['profile [@user]']
+handler.tags = ['exp']
+handler.command = ['tes'] 
 export default handler
+
+const more = String.fromCharCode(8206)
+const readMore = more.repeat(4001)
+
+function clockString(ms) {
+  let d = isNaN(ms) ? '--' : Math.floor(ms / 86400000)
+  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000) % 24
+  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
+  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
+  return [d, ' *Days ☀️*\n ', h, ' *Hours 🕐*\n ', m, ' *Minute ⏰*\n ', s, ' *Second ⏱️* '].map(v => v.toString().padStart(2, 0)).join('')
+}
